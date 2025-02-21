@@ -1,32 +1,24 @@
 package xyz.xindi.keywizard.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.gui.Font;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.client.Minecraft;
-import xyz.xindi.keywizard.mixin.KeyBindingAccessor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class KeyboardWidget
-        extends AbstractContainerEventHandler implements Renderable, TickableElement, NarratableEntry
-{
+        extends AbstractContainerEventHandler implements Renderable, TickableElement, NarratableEntry {
     public KeyWizardScreen keyWizardScreen;
 
     private HashMap<Integer, KeyboardKeyWidget> keys = new HashMap<>();
@@ -53,7 +45,7 @@ public class KeyboardWidget
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-                List<? extends KeyboardKeyWidget> keys = children();
+        List<? extends KeyboardKeyWidget> keys = children();
         for (KeyboardKeyWidget k : keys)
             k.render(graphics, mouseX, mouseY, partialTick);
 //        if (!this.keyWizardScreen.getCategorySelectorExtended())
@@ -92,28 +84,31 @@ public class KeyboardWidget
 
     }
 
-    //
-//    public float getAnchorX() {
-//        return this.anchorX;
-//    }
-//
-//    public float getAnchorY() {
-//        return this.anchorY;
-//    }
-//
+    public float getAnchorX() {
+        return this.anchorX;
+    }
+
+    public float getAnchorY() {
+        return this.anchorY;
+    }
+
     public class KeyboardKeyWidget extends AbstractButton implements TickableElement {
         private InputConstants.Key key;
 
-        private List<Component> tooltipText = new ArrayList<>();
+        private List<String> tooltipText = new ArrayList<>();
 
         protected KeyboardKeyWidget(int keyCode, float x, float y, float width, float height, InputConstants.Type keyType) {
-            super((int)x, (int)y, (int)width, (int)height, Component.empty());
-            this.setX((int)x);
-            this.setY((int)y);
-            this.width = (int)width;
-            this.height = (int)height;
+            super((int) x, (int) y, (int) width, (int) height, Component.empty());
             this.key = keyType.getOrCreate(keyCode);
             this.setMessage(MutableComponent.create(this.key.getDisplayName().getContents()));
+        }
+
+        public InputConstants.Key getKey() {
+            return this.key;
+        }
+
+        public String getTooltipText() {
+            return String.join("/", this.tooltipText);
         }
 
         @Override
@@ -121,56 +116,35 @@ public class KeyboardWidget
             int bindingCount = this.tooltipText.size();
             int color = 0;
             if (this.visible) {
-                if (!KeyboardWidget.this.keyWizardScreen.getCategorySelectorExtended()) {
-                    color = -5592406;
+                if (isHovered() && !KeyboardWidget.this.keyWizardScreen.getCategorySelectorExtended()) {
+                    color = 0xFFAAAAAA;
                     if (bindingCount == 1) {
-                        color = -16733696;
+                        color = 0xFF00AA00;
                     } else if (bindingCount > 1) {
-                        color = -5636096;
+                        LogUtils.getLogger().debug("hovered key = " + this.key);
+                        for (var e : tooltipText) {
+                            LogUtils.getLogger().debug("tooltipText = " + e);
+                        }
+                        color = 0xFFAA0000;
                     }
                 } else {
-                    color = -1;
+                    color = 0xFFFFFFFF;
                     if (bindingCount == 1) {
-                        color = -16711936;
+                        color = 0xFF00FF00;
                     } else if (bindingCount > 1) {
-                        color = -65536;
+                        color = 0xFFFF0000;
+                        LogUtils.getLogger().debug("not hovered key = " + this.key);
+                        for (var e : tooltipText) {
+                            LogUtils.getLogger().debug("tooltipText = " + e);
+                        }
                     }
                 }
             } else {
-                color = -11184811;
+                color = 0xFF555555;
             }
 
             return color;
         }
-
-        //        @Override
-//        public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-//            int bindingCount = this.tooltipText.size();
-//            int color = 0;
-//            if (this.visible) {
-//                if (m_198029_() && !KeyboardWidget.this.keyWizardScreen.getCategorySelectorExtended()) {
-//                    color = -5592406;
-//                    if (bindingCount == 1) {
-//                        color = -16733696;
-//                    } else if (bindingCount > 1) {
-//                        color = -5636096;
-//                    }
-//                } else {
-//                    color = -1;
-//                    if (bindingCount == 1) {
-//                        color = -16711936;
-//                    } else if (bindingCount > 1) {
-//                        color = -65536;
-//                    }
-//                }
-//            } else {
-//                color = -11184811;
-//            }
-//            DrawingUtil.drawNoFillRect(matrices, this.x, this.y, this.x + this.width, this.y + this.height, color);
-//            Font textRenderer = (Minecraft.getInstance()).font;
-//            textRenderer.m_92763_(matrices, m_6035_(), this.x + this.width / 2.0F - (textRenderer
-//                    .m_92852_((FormattedText)m_6035_()) / 2), this.y + (this.height - 6.0F) / 2.0F, color);
-//        }
 //
 //        public void m_5691_() {
 //            m_7435_(Minecraft.m_91087_().m_91106_());
@@ -195,9 +169,13 @@ public class KeyboardWidget
         private void updateTooltip() {
             ArrayList<String> tooltipText = new ArrayList<>();
             for (KeyMapping b : (Minecraft.getInstance()).options.keyMappings) {
-                if (b.getKey().equals(this.key))
-                    this.tooltipText.add(MutableComponent.create(b.getTranslatedKeyMessage().getContents()));
+                if (b.getKey().equals(this.key)) {
+                    String keyName = b.getName().substring(4);
+                    tooltipText.add(keyName.substring(0, 1).toUpperCase() + keyName.substring(1));
+                }
             }
+
+            this.tooltipText = tooltipText;
         }
 
         public void tick() {

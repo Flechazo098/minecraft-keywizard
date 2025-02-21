@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
-import xyz.xindi.keywizard.mixin.KeyBindingAccessor;
 import xyz.xindi.keywizard.util.KeyBindingUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -38,12 +37,12 @@ public class KeyBindingListWidget
         this.keyWizardScreen = keyWizardScreen;
         for (KeyMapping k : Minecraft.getInstance().options.keyMappings)
             addEntry(new BindingEntry(k));
-//        m_6987_(m_6702_().get(0));
+        setSelectedIndex(0);
     }
 
     @Override
     public int getRowWidth() {
-        return this.width;
+        return this.width - 15;
     }
 
     //    @Nullable
@@ -126,7 +125,6 @@ public class KeyBindingListWidget
 //    }
 
     public void tick() {
-        LogUtils.getLogger().debug("KeyBindingListWidget.width = " + this.getWidth() + ", height = " + this.getHeight());
         updateList();
     }
 
@@ -144,14 +142,9 @@ public class KeyBindingListWidget
 
         @Override
         public void render(GuiGraphics graphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            LogUtils.getLogger().debug("BindingEntry render " + this.keyBinding.getTranslatedKeyMessage() + ", x = " + x + ", y = " + y);
-//            graphics.drawString(Minecraft.getInstance().font, MutableComponent.create(this.keyBinding.getTranslatedKeyMessage().getContents()), x, y, entryWidth, hovered);
-            //            KeyBindingListWidget.this.keyWizardScreen.f_91062_.m_92763_(matrices, (Component)MutableComponent.m_237204_((ComponentContents)new TranslatableContents(this.keyBinding.m_90860_())), x, y, -1);
-            int color = -6710887;
-//            Objects.requireNonNull(KeyBindingListWidget.this.keyWizardScreen.f_91062_);
-//            KeyBindingListWidget.this.keyWizardScreen.f_91062_.m_92763_(matrices, this.keyBinding.m_90863_(), x, (y + 9 + 5), color);
-            graphics.drawString(Minecraft.getInstance().font, this.keyBinding.getCategory(), x, y, -1);
-            graphics.drawString(Minecraft.getInstance().font, this.keyBinding.getTranslatedKeyMessage(), x, (y + 9 + 5), color);
+            String keyName = this.keyBinding.getName().substring(4);
+            graphics.drawString(Minecraft.getInstance().font, keyName.substring(0, 1).toUpperCase() + keyName.substring(1), x, y, 0xFFFFFFFF);
+            graphics.drawString(Minecraft.getInstance().font, this.keyBinding.getTranslatedKeyMessage(), x, (y + Minecraft.getInstance().font.lineHeight + 5), 0xFF999999);
         }
     }
 }

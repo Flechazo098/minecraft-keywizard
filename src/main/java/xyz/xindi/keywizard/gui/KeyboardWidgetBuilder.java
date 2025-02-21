@@ -1,6 +1,7 @@
 package xyz.xindi.keywizard.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.logging.LogUtils;
 
 public class KeyboardWidgetBuilder {
     public static KeyboardWidget standardKeyboard(KeyWizardScreen keyWizardScreen, float anchorX, float anchorY, float width, float height) {
@@ -10,6 +11,7 @@ public class KeyboardWidgetBuilder {
         float keySpacing = 5.0F;
         float keyWidth = width / 12.0F - keySpacing;
         float keyHeight = height / 6.0F - keySpacing;
+        LogUtils.getLogger().debug("KeyboardWidget width = " + width + ", keyWidth = " + keyWidth);
         currentX = addHorizontalRow(kb, new int[] {
                 290, 291, 292, 293, 294, 295, 296, 297, 298, 299,
                 300, 301 }, 0.0F, currentY, keyWidth, keyHeight, keySpacing);
@@ -40,13 +42,13 @@ public class KeyboardWidgetBuilder {
         currentX = addHorizontalRow(kb, new int[] { 341, 343, 342, 32, 346, 347, 345 }, 0.0F, currentY, keyWidth, keyHeight, keySpacing);
         return kb;
     }
-//
-//    public static KeyboardWidget singleKeyKeyboard(KeyWizardScreen keyWizardScreen, float anchorX, float anchorY, float width, float height, int keyCode, InputConstants.Type keyType) {
-//        KeyboardWidget kb = new KeyboardWidget(keyWizardScreen, anchorX, anchorY);
-//        kb.addKey(0.0F, 0.0F, width, height, 0.0F, keyCode, keyType);
-//        return kb;
-//    }
-//
+
+    public static KeyboardWidget singleKeyKeyboard(KeyWizardScreen keyWizardScreen, float anchorX, float anchorY, float width, float height, int keyCode, InputConstants.Type keyType) {
+        KeyboardWidget kb = new KeyboardWidget(keyWizardScreen, anchorX, anchorY);
+        kb.addKey(0.0F, 0.0F, width, height, 0.0F, keyCode, keyType);
+        return kb;
+    }
+
     private static float addHorizontalRow(KeyboardWidget kb, int[] keys, float startX, float y, float width, float height, float spacing) {
         float currentX = startX;
         for (int k : keys)
