@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import xyz.xindi.keywizard.KeyWizard;
 
@@ -143,7 +144,7 @@ public class KeyWizardScreen extends OptionsSubScreen {
         });
 
         addRenderableWidget(this.bindingList);
-//        addRenderableWidget(this.keyboard);
+        addRenderableWidget(this.keyboard);
         addRenderableWidget(this.categorySelector);
         addRenderableWidget(this.categorySelector.getCategoryList());
 
@@ -181,21 +182,20 @@ public class KeyWizardScreen extends OptionsSubScreen {
 //    public KeyMapping getSelectedKeyBinding() {
 //        return this.bindingList.getSelectedKeyBinding();
 //    }
-//
+
     public boolean getCategorySelectorExtended() {
-        return true;
-//        return this.categorySelector.extended;
+        return this.categorySelector.extended;
     }
-//
-//    public String getSelectedCategory() {
-//        return this.categorySelector.getSelctedCategory();
-//    }
-//
-//    public String getFilterText() {
-//        return this.searchBar.getValue();
-//    }
-//
-//    public void setSearchText(String s) {
-//        this.searchBar.setValue(s);
-//    }
+
+    public String getSelectedCategory() {
+        return this.categorySelector.getSelctedCategory();
+    }
+
+    public String getFilterText() {
+        return this.searchBar.getValue();
+    }
+
+    public void setSearchText(String s) {
+        this.searchBar.setValue(s);
+    }
 }

@@ -48,21 +48,22 @@ public class KeyboardWidget
         List<? extends KeyboardKeyWidget> keys = children();
         for (KeyboardKeyWidget k : keys)
             k.render(graphics, mouseX, mouseY, partialTick);
-//        if (!this.keyWizardScreen.getCategorySelectorExtended())
-//            for (KeyboardKeyWidget k : keys) {
-//                if (k.f_93623_ && k.m_198029_())
-//                    this.keyWizardScreen.m_96597_(matrices, k.tooltipText, mouseX, mouseY);
-//            }
+        if (!this.keyWizardScreen.getCategorySelectorExtended())
+            for (KeyboardKeyWidget k : keys) {
+                if (k.active && k.isHovered())
+                    this.keyWizardScreen.setTooltipForNextRenderPass(Component.translatable(k.getTooltipText()));
+            }
     }
 
-//    public boolean m_6375_(double mouseX, double mouseY, int button) {
-//        if (!this.keyWizardScreen.getCategorySelectorExtended())
-//            for (KeyboardKeyWidget k : m_6702_()) {
-//                if (k.m_6375_(mouseX, mouseY, button))
-//                    return true;
-//            }
-//        return false;
-//    }
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!this.keyWizardScreen.getCategorySelectorExtended())
+            for (KeyboardKeyWidget k : children()) {
+                if (k.mouseClicked(mouseX, mouseY, button))
+                    return true;
+            }
+        return false;
+    }
 
     @Override
     public List<? extends KeyboardKeyWidget> children() {
