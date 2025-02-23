@@ -22,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 import xyz.xindi.keywizard.KeyWizard;
 
 public class KeyWizardScreen extends OptionsSubScreen {
-    private final int[] mouseCodes = new int[] {GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_MOUSE_BUTTON_2, GLFW.GLFW_MOUSE_BUTTON_3, GLFW.GLFW_MOUSE_BUTTON_4, GLFW.GLFW_MOUSE_BUTTON_5, GLFW.GLFW_MOUSE_BUTTON_6, GLFW.GLFW_MOUSE_BUTTON_7, GLFW.GLFW_MOUSE_BUTTON_8};
+    private final int[] mouseCodes = new int[]{GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_MOUSE_BUTTON_2, GLFW.GLFW_MOUSE_BUTTON_3, GLFW.GLFW_MOUSE_BUTTON_4, GLFW.GLFW_MOUSE_BUTTON_5, GLFW.GLFW_MOUSE_BUTTON_6, GLFW.GLFW_MOUSE_BUTTON_7, GLFW.GLFW_MOUSE_BUTTON_8};
 
     private int mouseCodeIndex = 0;
 
@@ -50,12 +50,10 @@ public class KeyWizardScreen extends OptionsSubScreen {
 
     public KeyWizardScreen(Screen parent) {
         super(parent, Minecraft.getInstance().options, Component.nullToEmpty(KeyWizard.MODID));
-        LogUtils.getLogger().debug("KeyWizardScreen constructor");
     }
 
     @Override
     protected void init() {
-        LogUtils.getLogger().debug("KeyWizardScreen init");
         int mouseButtonX = this.width - 105;
         int mouseButtonY = this.height / 2 - 115;
         int mouseButtonWidth = 80;
@@ -63,8 +61,6 @@ public class KeyWizardScreen extends OptionsSubScreen {
         int maxBindingNameWidth = 0;
         int maxCategoryWidth = 0;
         for (KeyMapping k : this.options.keyMappings) {
-            LogUtils.getLogger().debug("KeyWizardScreen KeyMapping.name = " + k.getKey().getDisplayName());
-            LogUtils.getLogger().debug("KeyWizardScreen KeyMapping.category = " + k.getCategory());
             int w = this.font.width(MutableComponent.create(new TranslatableContents(k.getName(), k.getName(), new Object[]{})));
             if (w > maxBindingNameWidth)
                 maxBindingNameWidth = w;
@@ -73,71 +69,65 @@ public class KeyWizardScreen extends OptionsSubScreen {
             if (categoryWidth > maxCategoryWidth)
                 maxCategoryWidth = categoryWidth;
         }
-        LogUtils.getLogger().debug("KeyWizardScreen maxBindingNameWidth = " + maxBindingNameWidth);
-        LogUtils.getLogger().debug("KeyWizardScreen maxCategoryWidth = " + maxCategoryWidth);
 
         int bindingListWidth = maxBindingNameWidth + 20;
 
-        this.keyboard = KeyboardWidgetBuilder.standardKeyboard(this, (bindingListWidth + 15), (this.height / 2 - 90), (this.width - bindingListWidth -15), 180.0F);
+        this.keyboard = KeyboardWidgetBuilder.standardKeyboard(this, (bindingListWidth + 15), (this.height / 2 - 90), (this.width - bindingListWidth - 15), 180.0F);
         this.bindingList = new KeyBindingListWidget(this, 10, 10, bindingListWidth, this.height - 40, 9 * 3 + 10);
         this.categorySelector = new CategorySelectorWidget(this, bindingListWidth + 15, 5, maxCategoryWidth + 50, 20);
 
         this.mouseButton = KeyboardWidgetBuilder.singleKeyKeyboard(this, mouseButtonX, mouseButtonY, mouseButtonWidth, mouseButtonHeight, this.mouseCodes[this.mouseCodeIndex], InputConstants.Type.MOUSE);
 
-        Button.Builder mousePlusBuilder = new Button.Builder(Component.translatable("+"), btn -> {});
-        mousePlusBuilder.bounds((int)this.mouseButton.getAnchorX() + 83, (int)this.mouseButton.getAnchorY(), 25, 20);
+        Button.Builder mousePlusBuilder = new Button.Builder(Component.translatable("+"), btn -> {
+            this.mouseCodeIndex ++;
+            if (this.mouseCodeIndex >= this.mouseCodes.length ) {
+                this.mouseCodeIndex = 0;
+            }
+            removeWidget(this.mouseButton);
+            this.mouseButton = KeyboardWidgetBuilder.singleKeyKeyboard(this, mouseButtonX, mouseButtonY, mouseButtonWidth, mouseButtonHeight, mouseCodes[mouseCodeIndex], InputConstants.Type.MOUSE);
+            addRenderableWidget(this.mouseButton);
+        });
+        mousePlusBuilder.bounds((int) this.mouseButton.getAnchorX() + 83, (int) this.mouseButton.getAnchorY(), 25, 20);
         this.mousePlus = mousePlusBuilder.build();
-//        this.mousePlus = new Button((int)this.mouseButton.getAnchorX() + 83, (int)this.mouseButton.getAnchorY(), 25, 20, Component.m_130674_("+"), btn -> {
-//            this.mouseCodeIndex++;
-//            if (this.mouseCodeIndex >= this.mouseCodes.length)
-//                this.mouseCodeIndex = 0;
-//            m_169411_((GuiEventListener)this.mouseButton);
-//            this.mouseButton = KeyboardWidgetBuilder.singleKeyKeyboard(this, mouseButtonX, mouseButtonY, mouseButtonWidth, mouseButtonHeight, this.mouseCodes[this.mouseCodeIndex], InputConstants.Type.MOUSE);
-//            m_142416_((GuiEventListener)this.mouseButton);
-//        });
 
-        Button.Builder mouseMinusBuilder = new Button.Builder(Component.translatable("-"), btn -> {});
-        mouseMinusBuilder.bounds((int)this.mouseButton.getAnchorX() - 26, (int)this.mouseButton.getAnchorY(), 25, 20);
+        Button.Builder mouseMinusBuilder = new Button.Builder(Component.translatable("-"), btn -> {
+            this.mouseCodeIndex --;
+            if (this.mouseCodeIndex < 0) {
+                this.mouseCodeIndex = this.mouseCodes.length - 1;
+            }
+            removeWidget(this.mouseButton);
+            this.mouseButton = KeyboardWidgetBuilder.singleKeyKeyboard(this, mouseButtonX, mouseButtonY, mouseButtonWidth, mouseButtonHeight, mouseCodes[mouseCodeIndex], InputConstants.Type.MOUSE);
+            addRenderableWidget(this.mouseButton);
+        });
+        mouseMinusBuilder.bounds((int) this.mouseButton.getAnchorX() - 26, (int) this.mouseButton.getAnchorY(), 25, 20);
         this.mouseMinus = mouseMinusBuilder.build();
-//        this.mouseMinus = new Button((int)this.mouseButton.getAnchorX() - 26, (int)this.mouseButton.getAnchorY(), 25, 20, Component.m_130674_("-"), btn -> {
-//            this.mouseCodeIndex--;
-//            if (this.mouseCodeIndex < 0)
-//                this.mouseCodeIndex = this.mouseCodes.length - 1;
-//            m_169411_((GuiEventListener)this.mouseButton);
-//            this.mouseButton = KeyboardWidgetBuilder.singleKeyKeyboard(this, mouseButtonX, mouseButtonY, mouseButtonWidth, mouseButtonHeight, this.mouseCodes[this.mouseCodeIndex], InputConstants.Type.MOUSE);
-//            m_142416_((GuiEventListener)this.mouseButton);
-//        });
 
         this.searchBar = new EditBox(this.font, 10, this.height - 20, bindingListWidth, 14, Component.empty());
 
-        Button.Builder resetBindingBuilder = new Button.Builder(MutableComponent.create(new TranslatableContents("controls.reset", "controls.reset", new Object[]{})), btn -> {});
+        Button.Builder resetBindingBuilder = new Button.Builder(MutableComponent.create(new TranslatableContents("controls.reset", "controls.reset", new Object[]{})),
+                btn -> {
+                    KeyMapping selectedBinding = this.getSelectedKeyBinding();
+                    selectedBinding.setToDefault();
+                });
         resetBindingBuilder.bounds(bindingListWidth + 15, this.height - 23, 50, 20);
         this.resetBinding = resetBindingBuilder.build();
-//        this.resetBinding = new Button(bindingListWidth + 15, this.height - 23, 50, 20, (Component)MutableComponent.m_237204_((ComponentContents)new TranslatableContents("controls.reset")), btn -> {
-//            KeyMapping selectedBinding = getSelectedKeyBinding();
-//            selectedBinding.m_90848_(selectedBinding.m_90861_());
-//            KeyMapping.m_90854_();
-//        });
 
-        Button.Builder clearBindingBuilder = new Button.Builder(MutableComponent.create(new TranslatableContents("gui.clear", "gui.clear", new Object[]{})), btn -> {});
+        Button.Builder clearBindingBuilder = new Button.Builder(MutableComponent.create(new TranslatableContents("gui.clear", "gui.clear", new Object[]{})),
+                btn -> {
+                    KeyMapping selectedBinding = this.getSelectedKeyBinding();
+                    selectedBinding.setKey(InputConstants.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_UNKNOWN));
+                });
         clearBindingBuilder.bounds(bindingListWidth + 66, this.height - 23, 50, 20);
         this.clearBinding = clearBindingBuilder.build();
-//        this.clearBinding = new Button(bindingListWidth + 66, this.height - 23, 50, 20, (Component)MutableComponent.m_237204_((ComponentContents)new TranslatableContents("gui.clear")), btn -> {
-//            KeyMapping selectedBinding = getSelectedKeyBinding();
-//            selectedBinding.m_90848_(InputConstants.Type.KEYSYM.m_84895_(-1));
-//            KeyMapping.m_90854_();
-//        });
 
-        Button.Builder resetAllBuilder = new Button.Builder(MutableComponent.create(new TranslatableContents("controls.resetAll", "controls.resetAll", new Object[]{})), btn -> {});
+        Button.Builder resetAllBuilder = new Button.Builder(MutableComponent.create(new TranslatableContents("controls.resetAll", "controls.resetAll", new Object[]{})),
+                btn -> {
+                    for (KeyMapping b : this.options.keyMappings) {
+                        b.setToDefault();
+                    }
+                });
         resetAllBuilder.bounds(bindingListWidth + 117, this.height - 23, 70, 20);
         this.resetAll = resetAllBuilder.build();
-//        this.resetAll = new Button(bindingListWidth + 117, this.height - 23, 70, 20, (Component)MutableComponent.create((ComponentContents)new TranslatableContents("controls.resetAll", "controls.resetAll", new Object[]{})), btn -> {
-////            for (KeyMapping b : this.f_96282_.f_92059_)
-////                b.m_90848_(b.m_90861_());
-////            KeyMapping.m_90854_();
-//        }, val -> {
-//            return Component.empty();
-//        });
 
         this.screenToggleButton = new ImageButton(this.width - 22, this.height - 22, 20, 20, new WidgetSprites(KeyWizard.SCREEN_TOGGLE_WIDGETS, KeyWizard.SCREEN_TOGGLE_WIDGETS), btn -> {
             this.minecraft.setScreen((Screen) new ControlsScreen(this.lastScreen, this.options));
@@ -174,14 +164,14 @@ public class KeyWizardScreen extends OptionsSubScreen {
     public void tick() {
         for (GuiEventListener e : this.children()) {
             if (e instanceof TickableElement)
-                ((TickableElement)e).tick();
+                ((TickableElement) e).tick();
         }
     }
 
-//    @Nullable
-//    public KeyMapping getSelectedKeyBinding() {
-//        return this.bindingList.getSelectedKeyBinding();
-//    }
+    @Nullable
+    public KeyMapping getSelectedKeyBinding() {
+        return this.bindingList.getSelectedKeyBinding();
+    }
 
     public boolean getCategorySelectorExtended() {
         return this.categorySelector.extended;

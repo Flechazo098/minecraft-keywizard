@@ -11,7 +11,6 @@ public class KeyboardWidgetBuilder {
         float keySpacing = 5.0F;
         float keyWidth = width / 12.0F - keySpacing;
         float keyHeight = height / 6.0F - keySpacing;
-        LogUtils.getLogger().debug("KeyboardWidget width = " + width + ", keyWidth = " + keyWidth);
         currentX = addHorizontalRow(kb, new int[] {
                 290, 291, 292, 293, 294, 295, 296, 297, 298, 299,
                 300, 301 }, 0.0F, currentY, keyWidth, keyHeight, keySpacing);

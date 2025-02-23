@@ -10,8 +10,10 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -122,10 +124,6 @@ public class KeyboardWidget
                     if (bindingCount == 1) {
                         color = 0xFF00AA00;
                     } else if (bindingCount > 1) {
-                        LogUtils.getLogger().debug("hovered key = " + this.key);
-                        for (var e : tooltipText) {
-                            LogUtils.getLogger().debug("tooltipText = " + e);
-                        }
                         color = 0xFFAA0000;
                     }
                 } else {
@@ -134,10 +132,6 @@ public class KeyboardWidget
                         color = 0xFF00FF00;
                     } else if (bindingCount > 1) {
                         color = 0xFFFF0000;
-                        LogUtils.getLogger().debug("not hovered key = " + this.key);
-                        for (var e : tooltipText) {
-                            LogUtils.getLogger().debug("tooltipText = " + e);
-                        }
                     }
                 }
             } else {
@@ -146,26 +140,6 @@ public class KeyboardWidget
 
             return color;
         }
-//
-//        public void m_5691_() {
-//            m_7435_(Minecraft.m_91087_().m_91106_());
-//            if (Screen.m_96638_()) {
-//                String keyName;
-//                Component t = m_6035_();
-//                if (t instanceof TranslatableContents) {
-//                    keyName = I18n.m_118938_(((TranslatableContents)t).m_237508_(), new Object[0]);
-//                } else {
-//                    keyName = t.getString();
-//                }
-//                KeyboardWidget.this.keyWizardScreen.setSearchText("<" + keyName + ">");
-//            } else {
-//                KeyMapping selectedKeyBinding = KeyboardWidget.this.keyWizardScreen.getSelectedKeyBinding();
-//                if (selectedKeyBinding != null) {
-//                    selectedKeyBinding.m_90848_(this.key);
-//                    KeyMapping.m_90854_();
-//                }
-//            }
-//        }
 
         private void updateTooltip() {
             ArrayList<String> tooltipText = new ArrayList<>();
@@ -185,7 +159,22 @@ public class KeyboardWidget
 
         @Override
         public void onPress() {
-
+            this.playDownSound(Minecraft.getInstance().getSoundManager());
+            if (Screen.hasShiftDown()) {
+                Component t = this.getMessage();
+                String keyName;
+                if (t instanceof TranslatableContents) {
+                    keyName = ((TranslatableContents) t).getKey();
+                } else {
+                    keyName = t.getString();
+                }
+                keyWizardScreen.setSearchText("<" + keyName + ">");
+            } else {
+                KeyMapping selectedKeyBinding = keyWizardScreen.getSelectedKeyBinding();
+                if (selectedKeyBinding != null) {
+                    selectedKeyBinding.setKey(this.key);
+                }
+            }
         }
 
         @Override

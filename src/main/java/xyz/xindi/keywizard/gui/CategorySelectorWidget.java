@@ -30,7 +30,6 @@ public class CategorySelectorWidget
             listHeight = this.keyWizardScreen.height - this.getY() - this.height - 10;
         }
         this.categoryList = new BindingCategoryListWidget(Minecraft.getInstance(), this.getY() + this.height, this.getX(), this.width, listHeight, listItemHeight);
-        LogUtils.getLogger().debug("BindingCategoryListWidget y = " + this.getY() + ", x = " + this.getX() + ", height = " + this.height);
     }
 
     @Override
@@ -42,7 +41,6 @@ public class CategorySelectorWidget
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         boolean listClicked = this.categoryList.mouseClicked(mouseX, mouseY, button);
         boolean thisClicked = super.mouseClicked(mouseX, mouseY, button);
-        LogUtils.getLogger().debug("CategorySelectorWidget listClicked = " + listClicked + ", thisClicked = " + thisClicked);
         if (!listClicked && !thisClicked)
             this.extended = false;
         return (listClicked || thisClicked);
@@ -79,9 +77,6 @@ public class CategorySelectorWidget
             for (String c : KeyBindingUtil.getCategoriesWithDynamics())
                 addEntry(new CategoryEntry(c));
             setSelectedIndex(0);
-
-            LogUtils.getLogger().debug("BindingCategoryListWidget top = " + top + ", left = " + left + ", width = " + width + ", height " + height);
-            LogUtils.getLogger().debug("BindingCategoryListWidget x = " + this.getX() + ", y = " + this.getY() + ", width = " + this.width);
         }
 
         @Override
@@ -103,7 +98,6 @@ public class CategorySelectorWidget
 
             @Override
             public boolean mouseClicked(double p_94737_, double p_94738_, int p_94739_) {
-                LogUtils.getLogger().debug("CategoryEntry mouseClicked = " + this.category);
                 return true;
             }
         }

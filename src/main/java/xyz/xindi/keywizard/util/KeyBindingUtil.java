@@ -30,10 +30,10 @@ public class KeyBindingUtil {
         return categories;
     }
 
-//    public static Map<InputConstants.Key, Integer> getBindingCountsByKey() {
-//        HashMap<InputConstants.Key, Integer> map = new HashMap<>();
-//        for (KeyMapping b : (Minecraft.getInstance()).options.keyMappings)
-//            map.merge(((KeyBindingAccessor)b).getBoundKey(), Integer.valueOf(1), Integer::sum);
-//        return Collections.unmodifiableMap(map);
-//    }
+    public static Map<InputConstants.Key, Integer> getBindingCountsByKey() {
+        HashMap<InputConstants.Key, Integer> map = new HashMap<>();
+        for (KeyMapping b : (Minecraft.getInstance()).options.keyMappings)
+            map.merge(b.getKey(), 1, Integer::sum);
+        return Collections.unmodifiableMap(map);
+    }
 }

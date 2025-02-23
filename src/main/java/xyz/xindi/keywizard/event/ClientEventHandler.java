@@ -21,9 +21,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.Key e) {
-        LogUtils.getLogger().debug("ClientEventHandler onKeyInput " + e.getKey());
         if (KEY_OPEN_KEYWIZARD.isDown()) {
-            LogUtils.getLogger().debug("ClientEventHandler try to show keywizard screen");
             Minecraft client = Minecraft.getInstance();
             client.setScreen((Screen)new KeyWizardScreen(client.screen));
         }
