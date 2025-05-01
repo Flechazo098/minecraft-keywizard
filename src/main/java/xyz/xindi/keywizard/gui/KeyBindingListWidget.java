@@ -1,16 +1,10 @@
 package xyz.xindi.keywizard.gui;
 
-import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.chat.ComponentContents;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Mth;
 import xyz.xindi.keywizard.util.KeyBindingUtil;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -19,12 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class KeyBindingListWidget
-        extends AbstractSelectionList<KeyBindingListWidget.BindingEntry> implements TickableElement
+public class KeyBindingListWidget extends AbstractSelectionList<KeyBindingListWidget.BindingEntry> implements TickableElement
 {
     public KeyWizardScreen keyWizardScreen;
 
@@ -33,12 +25,15 @@ public class KeyBindingListWidget
     private String currentCategory = "key.categories.keywizard.all";
 
     public KeyBindingListWidget(KeyWizardScreen keyWizardScreen, int top, int left, int width, int height, int itemHeight) {
-        super(Minecraft.getInstance(), width, height, top, itemHeight);
+        super(Minecraft.getInstance(), width, height, top, top + height, itemHeight);
         this.keyWizardScreen = keyWizardScreen;
         for (KeyMapping k : Minecraft.getInstance().options.keyMappings)
             addEntry(new BindingEntry(k));
-        setSelected(children().getFirst());
+        if (!children().isEmpty()) {
+            setSelected(children().get(0));
+        }
     }
+
 
     @Override
     public int getRowWidth() {
@@ -75,7 +70,7 @@ public class KeyBindingListWidget
                 for (KeyMapping k : bindings) {
                     this.addEntry(new BindingEntry(k));
                 }
-                setSelected(children().getFirst());
+                setSelected(children().get(0));
             } else {
                 this.setSelected(null);
             }
@@ -141,8 +136,9 @@ public class KeyBindingListWidget
         updateList();
     }
 
+
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput p_259858_) {
+    public void updateNarration (NarrationElementOutput output) {
 
     }
 

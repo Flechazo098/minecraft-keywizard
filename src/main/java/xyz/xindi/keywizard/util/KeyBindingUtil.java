@@ -24,9 +24,9 @@ public class KeyBindingUtil {
 
     public static ArrayList<String> getCategoriesWithDynamics() {
         ArrayList<String> categories = getCategories();
-        categories.addFirst("key.categories.keywizard.unbound");
-        categories.addFirst("key.categories.keywizard.conflicts");
-        categories.addFirst("key.categories.keywizard.all");
+        categories.add(0, "key.categories.keywizard.unbound");
+        categories.add(0, "key.categories.keywizard.conflicts");
+        categories.add(0, "key.categories.keywizard.all");
         return categories;
     }
 

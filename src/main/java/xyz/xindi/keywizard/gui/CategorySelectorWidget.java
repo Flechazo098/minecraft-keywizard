@@ -54,7 +54,7 @@ public class CategorySelectorWidget
 
     public void tick() {
         setMessage(Component.translatable(getSelctedCategory()));
-        this.categoryList.visible = this.extended;
+        this.categoryList.setVisible(this.extended);
     }
 
     public String getSelctedCategory() {
@@ -66,22 +66,38 @@ public class CategorySelectorWidget
     }
 
     private class BindingCategoryListWidget extends AbstractSelectionList<BindingCategoryListWidget.CategoryEntry> {
-        @Override
-        protected void updateWidgetNarration(NarrationElementOutput p_259858_) {
-
-        }
 
         public BindingCategoryListWidget(Minecraft client, int top, int left, int width, int height, int itemHeight) {
-            super(client, width, height, top, itemHeight);
+            super(client, width, height, top, top + height, itemHeight);
             setX(left);
             for (String c : KeyBindingUtil.getCategoriesWithDynamics())
                 addEntry(new CategoryEntry(c));
-            setSelected(children().getFirst());
+            if (!children().isEmpty()) {
+                setSelected(children().get(0));
+            }
+
+        }
+        private boolean visible = true;
+
+        public void setVisible(boolean visible) {
+            this.visible = visible;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            if (this.visible) {
+                super.render(graphics, mouseX, mouseY, partialTick);
+            }
         }
 
         @Override
         public int getRowWidth() {
             return this.width - 15;
+        }
+
+        @Override
+        public void updateNarration (NarrationElementOutput output) {
+
         }
 
         public class CategoryEntry extends AbstractSelectionList.Entry<CategoryEntry> {

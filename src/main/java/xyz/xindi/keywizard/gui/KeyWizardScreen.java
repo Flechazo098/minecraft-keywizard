@@ -1,21 +1,21 @@
 package xyz.xindi.keywizard.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.screens.options.OptionsSubScreen;
-import net.minecraft.client.gui.screens.options.controls.ControlsScreen;
+import net.minecraft.client.gui.screens.controls.ControlsScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -129,9 +129,17 @@ public class KeyWizardScreen extends OptionsSubScreen {
         resetAllBuilder.bounds(bindingListWidth + 117, this.height - 23, 70, 20);
         this.resetAll = resetAllBuilder.build();
 
-        this.screenToggleButton = new ImageButton(this.width - 22, this.height - 22, 20, 20, new WidgetSprites(KeyWizard.SCREEN_TOGGLE_WIDGETS, KeyWizard.SCREEN_TOGGLE_WIDGETS), btn -> {
-            this.minecraft.setScreen((Screen) new ControlsScreen(this.lastScreen, this.options));
-        });
+        int xTexStart = 0;
+        int yTexStart = 0;
+        int yDiffTex = 20;
+
+        this.screenToggleButton = new ImageButton(
+                this.width - 22, this.height - 22,
+                20, 20,
+                xTexStart, yTexStart, yDiffTex,
+                KeyWizard.SCREEN_TOGGLE_WIDGETS,
+                btn -> this.minecraft.setScreen(new ControlsScreen(this.lastScreen, this.options))
+        );
 
         addRenderableWidget(this.bindingList);
         addRenderableWidget(this.keyboard);
@@ -149,15 +157,15 @@ public class KeyWizardScreen extends OptionsSubScreen {
         addRenderableWidget(this.screenToggleButton);
     }
 
-    @Override
-    protected void addOptions() {
-
-    }
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        renderTransparentBackground(graphics);
+        this.renderTransparentBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
+    }
+
+    private void renderTransparentBackground(GuiGraphics guiGraphics) {
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
     }
 
     @Override
@@ -167,6 +175,11 @@ public class KeyWizardScreen extends OptionsSubScreen {
                 ((TickableElement) e).tick();
         }
     }
+
+    public void showTooltip(Component text) {
+        this.setTooltipForNextRenderPass(Tooltip.splitTooltip(this.minecraft, text));
+    }
+
 
     @Nullable
     public KeyMapping getSelectedKeyBinding() {

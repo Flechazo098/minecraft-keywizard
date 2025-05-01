@@ -53,7 +53,7 @@ public class KeyboardWidget
         if (!this.keyWizardScreen.getCategorySelectorExtended())
             for (KeyboardKeyWidget k : keys) {
                 if (k.active && k.isHovered())
-                    this.keyWizardScreen.setTooltipForNextRenderPass(Component.translatable(k.getTooltipText()));
+                    this.keyWizardScreen.showTooltip(Component.translatable(k.getTooltipText()));
             }
     }
 

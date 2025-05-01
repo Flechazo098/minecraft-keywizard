@@ -1,6 +1,5 @@
 package xyz.xindi.keywizard.event;
 
-import com.mojang.logging.LogUtils;
 import org.lwjgl.glfw.GLFW;
 import xyz.xindi.keywizard.gui.KeyWizardScreen;
 import com.mojang.blaze3d.platform.InputConstants;
