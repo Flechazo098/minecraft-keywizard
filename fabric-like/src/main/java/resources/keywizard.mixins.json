@@ -6,7 +6,6 @@
   "client": [
   ],
   "mixins": [
-    "MixinAbstractWidget"
   ],
   "injectors": {
     "defaultRequire": 1

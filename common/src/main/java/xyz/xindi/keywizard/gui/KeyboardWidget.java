@@ -3,6 +3,7 @@ package xyz.xindi.keywizard.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Renderable;
@@ -14,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import xyz.xindi.keywizard.platform.KeyMappingHelp;
-import xyz.xindi.keywizard.platform.WidgetHelp;
+import xyz.xindi.keywizard.util.DrawingUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,9 +117,10 @@ public class KeyboardWidget
             return String.join("/", this.tooltipText);
         }
 
-        public int getFGColor() {
+        @Override
+        public void renderWidget(GuiGraphics ctx, int mouseX, int mouseY, float delta) {
             int bindingCount = this.tooltipText.size();
-            int color = 0;
+            int color;
             if (this.visible) {
                 if (isHovered() && !KeyboardWidget.this.keyWizardScreen.getCategorySelectorExtended()) {
                     color = 0xFFAAAAAA;
@@ -138,32 +140,12 @@ public class KeyboardWidget
             } else {
                 color = 0xFF555555;
             }
-
-            return color;
+            DrawingUtil.drawNoFillRect(ctx.pose(), this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, color);
+            @SuppressWarnings("resource")
+            Font textRenderer = Minecraft.getInstance().font;
+            ctx.drawString(textRenderer, getMessage(), (int) (this.getX() + (this.width) / 2 - textRenderer.width(this.getMessage()) / 2.0F), (int) (this.getY() + (this.height - 6) / 2), color);
         }
 
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            // 更新颜色
-            getFGColor();
-
-            // 获取当前颜色（由 WidgetHelper 设置）
-            int color = this.getFGColor();
-
-            // 自定义渲染逻辑
-            if (this.visible) {
-                // 绘制按钮背景（可选）
-                graphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0x80000000);
-
-                // 绘制文本，使用我们设置的颜色
-                graphics.drawString(Minecraft.getInstance().font,
-                        this.getMessage(),
-                        this.getX() + 2,
-                        this.getY() + (this.height - 8) / 2,
-                        color,
-                        false);
-            }
-        }
 
 
         private void updateTooltip() {
